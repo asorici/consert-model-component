@@ -1,0 +1,20 @@
+Bundle-Version: 1.0.0
+-buildpath:  \
+	jena-bundle-2.7.2;version=2.7
+Export-Package:  \
+	org.aimas.ami.contextrep.model,\
+	org.aimas.ami.contextrep.model.exceptions,\
+	org.aimas.ami.contextrep.model.impl,\
+	org.aimas.ami.contextrep.vocabulary
+Bundle-Name: consert-model
+Bundle-Description: The classes corresponding to the CONSERT Context Model.
+Bundle-Vendor: org.aimas.ami
+Import-Package:  \
+	com.hp.hpl.jena.ontology,\
+	com.hp.hpl.jena.query,\
+	com.hp.hpl.jena.rdf.model,\
+	com.hp.hpl.jena.util.iterator,\
+	com.hp.hpl.jena.vocabulary,\
+	*
+
+-sources: false
