@@ -5,7 +5,8 @@ Export-Package:  \
 	org.aimas.ami.contextrep.model,\
 	org.aimas.ami.contextrep.model.exceptions,\
 	org.aimas.ami.contextrep.model.impl,\
-	org.aimas.ami.contextrep.vocabulary
+	org.aimas.ami.contextrep.vocabulary,\
+	org.aimas.ami.contextrep.datatype
 Bundle-Name: consert-model
 Bundle-Description: The classes corresponding to the CONSERT Context Model.
 Bundle-Vendor: org.aimas.ami

@@ -9,6 +9,7 @@ import java.util.Set;
 import org.aimas.ami.contextrep.model.BinaryContextAssertion;
 import org.aimas.ami.contextrep.model.ContextAssertion;
 import org.aimas.ami.contextrep.model.ContextAssertion.ContextAssertionType;
+import org.aimas.ami.contextrep.model.ContextModelUtils;
 import org.aimas.ami.contextrep.model.exceptions.ContextAssertionContentException;
 import org.aimas.ami.contextrep.model.exceptions.ContextAssertionModelException;
 import org.aimas.ami.contextrep.vocabulary.ConsertCore;
@@ -38,16 +39,9 @@ public abstract class ContextAssertionImpl implements ContextAssertion {
 		this.assertionArity = assertionArity;
 		this.assertionOntologyResource = assertionOntologyResource;
 		
-		mapAssertionStorage();
+		this.assertionStoreURI = ContextModelUtils.getAssertionStoreURI(assertionOntologyResource.getURI());
 	}
 
-	private void mapAssertionStorage() {
-		String assertionURI = assertionOntologyResource.getURI();
-		assertionURI = assertionURI.replaceAll("#", "/");
-		
-		assertionStoreURI = assertionURI + "Store";
-	}
-	
 	/* (non-Javadoc)
 	 * @see org.aimas.ami.contextrep.model.impl.ContextAssertion#getAssertionType()
 	 */
