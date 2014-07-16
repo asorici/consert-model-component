@@ -5,8 +5,7 @@ import java.util.List;
 
 import org.aimas.ami.contextrep.model.BinaryContextAssertion;
 import org.aimas.ami.contextrep.model.ContextAssertion;
-import org.aimas.ami.contextrep.model.exceptions.ContextAssertionContentException;
-import org.aimas.ami.contextrep.model.exceptions.ContextAssertionModelException;
+import org.aimas.ami.contextrep.model.exceptions.ContextModelContentException;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntResource;
@@ -52,8 +51,7 @@ public class BinaryContextAssertionImpl extends ContextAssertionImpl implements
 
 	@Override
     public List<Statement> copyToAncestor(Resource assertionUUIDRes, Dataset contextStoreDataset, 
-    	ContextAssertion ancestorAssertion, OntModel contextModel) 
-    		throws ContextAssertionContentException, ContextAssertionModelException {
+    	ContextAssertion ancestorAssertion, OntModel contextModel) throws ContextModelContentException {
 		
 		List<Statement> ancestorContent = new ArrayList<Statement>();
 		
@@ -63,7 +61,7 @@ public class BinaryContextAssertionImpl extends ContextAssertionImpl implements
 		// ======== inspect the current assertion contents ========
 		Statement contentStatement = assertionContentStore.getProperty(null, assertionOntologyResource.asProperty());
 		if (contentStatement == null) {
-			throw new ContextAssertionContentException("Binary ContextAssertion instance " 
+			throw new ContextModelContentException("Binary ContextAssertion instance " 
 				+ assertionUUIDRes.getURI() + " has no " + assertionOntologyResource + " statement in its content.");
 		}
 		

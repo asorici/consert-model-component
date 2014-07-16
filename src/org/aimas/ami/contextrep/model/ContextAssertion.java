@@ -2,8 +2,8 @@ package org.aimas.ami.contextrep.model;
 
 import java.util.List;
 
-import org.aimas.ami.contextrep.model.exceptions.ContextAssertionContentException;
-import org.aimas.ami.contextrep.model.exceptions.ContextAssertionModelException;
+import org.aimas.ami.contextrep.model.exceptions.ContextModelContentException;
+import org.aimas.ami.contextrep.model.exceptions.ContextModelConfigException;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntResource;
@@ -79,12 +79,12 @@ public interface ContextAssertion {
 	 * @param contextStoreDataset
 	 * @param ancestorAssertion
 	 * @return The statements that compose an instance of the <code>ancestorAssertion</code>.
-	 * @throws ContextAssertionContentException
-	 * @throws ContextAssertionModelException 
+	 * @throws ContextModelContentException
+	 * @throws ContextModelConfigException 
 	 */
 	public List<Statement> copyToAncestor(Resource assertionUUID, Dataset contextStoreDataset, 
 		ContextAssertion ancestorAssertion, OntModel contextModel) 
-		throws ContextAssertionContentException, ContextAssertionModelException;
+		throws ContextModelContentException;
 	
 	
 	public boolean isUnary();

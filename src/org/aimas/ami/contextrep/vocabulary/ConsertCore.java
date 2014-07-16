@@ -17,8 +17,6 @@ public class ConsertCore {
 	public final static String BASE_URI = CONSERT_ONT_ROOT_URI + "core";
 	public final static String NS = BASE_URI + "#";
 	
-	public final static String SPIN_NS = "http://spinrdf.org/spin#";
-	
     /** <p>The namespace of the vocabulary as a resource</p> */
     public static final Resource NAMESPACE = m_model.createResource( NS );
 	

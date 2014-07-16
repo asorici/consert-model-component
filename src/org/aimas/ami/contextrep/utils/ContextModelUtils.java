@@ -1,10 +1,11 @@
-package org.aimas.ami.contextrep.model;
+package org.aimas.ami.contextrep.utils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import org.aimas.ami.contextrep.datatype.CalendarIntervalList;
+import org.aimas.ami.contextrep.model.ContextAssertion;
 import org.aimas.ami.contextrep.model.ContextAssertion.ContextAssertionType;
 import org.aimas.ami.contextrep.vocabulary.ConsertAnnotation;
 import org.aimas.ami.contextrep.vocabulary.ConsertCore;

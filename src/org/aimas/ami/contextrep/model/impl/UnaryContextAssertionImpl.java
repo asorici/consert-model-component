@@ -5,8 +5,7 @@ import java.util.List;
 
 import org.aimas.ami.contextrep.model.ContextAssertion;
 import org.aimas.ami.contextrep.model.UnaryContextAssertion;
-import org.aimas.ami.contextrep.model.exceptions.ContextAssertionContentException;
-import org.aimas.ami.contextrep.model.exceptions.ContextAssertionModelException;
+import org.aimas.ami.contextrep.model.exceptions.ContextModelContentException;
 import org.aimas.ami.contextrep.vocabulary.ConsertCore;
 
 import com.hp.hpl.jena.ontology.OntModel;
@@ -35,8 +34,7 @@ public class UnaryContextAssertionImpl extends ContextAssertionImpl implements U
 
 	@Override
     public List<Statement> copyToAncestor(Resource assertionUUIDRes, Dataset contextStoreDataset, 
-    	ContextAssertion ancestorAssertion, OntModel contextModel) 
-    	throws ContextAssertionContentException, ContextAssertionModelException {
+    	ContextAssertion ancestorAssertion, OntModel contextModel) throws ContextModelContentException {
 		List<Statement> ancestorContent = new ArrayList<Statement>();
 		
 		// get the model store containing the ContextAssertion contents
@@ -48,7 +46,7 @@ public class UnaryContextAssertionImpl extends ContextAssertionImpl implements U
 		
 		try {
 			if (!resIt.hasNext()) { 
-				throw new ContextAssertionContentException("Unary ContextAssertion instance " 
+				throw new ContextModelContentException("Unary ContextAssertion instance " 
 					+ assertionUUIDRes.getURI() + " has no " + RDF.type + " property in content.");
 			}
 			
@@ -58,7 +56,7 @@ public class UnaryContextAssertionImpl extends ContextAssertionImpl implements U
 		
 		Statement roleStatement = assertionContentStore.getProperty(assertionBNode, ConsertCore.CONTEXT_ASSERTION_ROLE);
 		if (roleStatement == null) {
-			throw new ContextAssertionContentException("Unary ContextAssertion instance " 
+			throw new ContextModelContentException("Unary ContextAssertion instance " 
 				+ assertionUUIDRes.getURI() + " has no " + ConsertCore.CONTEXT_ASSERTION_ROLE + " property in content.");
 		}
 		

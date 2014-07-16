@@ -8,10 +8,8 @@ import java.util.Set;
 
 import org.aimas.ami.contextrep.model.BinaryContextAssertion;
 import org.aimas.ami.contextrep.model.ContextAssertion;
-import org.aimas.ami.contextrep.model.ContextAssertion.ContextAssertionType;
-import org.aimas.ami.contextrep.model.ContextModelUtils;
-import org.aimas.ami.contextrep.model.exceptions.ContextAssertionContentException;
-import org.aimas.ami.contextrep.model.exceptions.ContextAssertionModelException;
+import org.aimas.ami.contextrep.model.exceptions.ContextModelContentException;
+import org.aimas.ami.contextrep.utils.ContextModelUtils;
 import org.aimas.ami.contextrep.vocabulary.ConsertCore;
 
 import com.hp.hpl.jena.ontology.AllValuesFromRestriction;
@@ -180,7 +178,7 @@ public abstract class ContextAssertionImpl implements ContextAssertion {
 	@Override
     public abstract List<Statement> copyToAncestor(Resource assertionUUID, Dataset contextStoreDataset, 
     	ContextAssertion ancestorAssertion, OntModel contextModel) 
-    	throws ContextAssertionContentException, ContextAssertionModelException;
+    	throws ContextModelContentException;
 	
 	/**
 	 * Determine the type of a ContextAssertion (Static, Sensed, Profiled or Derived)

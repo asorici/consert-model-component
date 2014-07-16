@@ -7,8 +7,7 @@ import java.util.Set;
 
 import org.aimas.ami.contextrep.model.ContextAssertion;
 import org.aimas.ami.contextrep.model.NaryContextAssertion;
-import org.aimas.ami.contextrep.model.exceptions.ContextAssertionContentException;
-import org.aimas.ami.contextrep.model.exceptions.ContextAssertionModelException;
+import org.aimas.ami.contextrep.model.exceptions.ContextModelContentException;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntProperty;
@@ -39,8 +38,7 @@ public class NaryContextAssertionImpl extends ContextAssertionImpl implements
 
 	@Override
     public List<Statement> copyToAncestor(Resource assertionUUIDRes, Dataset contextStoreDataset, 
-    		ContextAssertion ancestorAssertion, OntModel contextModel) 
-    		throws ContextAssertionContentException, ContextAssertionModelException {
+    		ContextAssertion ancestorAssertion, OntModel contextModel) throws ContextModelContentException {
 		
 		List<Statement> ancestorContent = new ArrayList<Statement>();
 		NaryContextAssertion naryAncestorAssertion = (NaryContextAssertion)ancestorAssertion;
@@ -55,7 +53,7 @@ public class NaryContextAssertionImpl extends ContextAssertionImpl implements
 		
 		try {
 			if (!resIt.hasNext()) { 
-				throw new ContextAssertionContentException("Nary ContextAssertion instance " 
+				throw new ContextModelContentException("Nary ContextAssertion instance " 
 					+ assertionUUIDRes.getURI() + " has no " + RDF.type + " property in content.");
 			}
 			
@@ -76,7 +74,7 @@ public class NaryContextAssertionImpl extends ContextAssertionImpl implements
 				if (ancestorRoleSubProperties.contains(roleProp)) {
 					Statement roleStatement = assertionContentStore.getProperty(assertionBNode, roleProp);
 					if (roleStatement == null) {
-						throw new ContextAssertionContentException("Nary ContextAssertion instance " 
+						throw new ContextModelContentException("Nary ContextAssertion instance " 
 								+ assertionUUIDRes.getURI() + " has no " + roleProp + " property in content.");
 					}
 					
@@ -90,7 +88,7 @@ public class NaryContextAssertionImpl extends ContextAssertionImpl implements
 			}
 			
 			if (!found) {
-				throw new ContextAssertionModelException(
+				throw new ContextModelContentException(
 					"NaryContextAssertion " + ancestorAssertion.getOntologyResource() + 
 					" has no subProperty in NaryContextAssertion " + assertionOntologyResource + 
 					" for role property " + ancestorRoleProp + ".");
