@@ -193,12 +193,7 @@ public abstract class ContextAssertionImpl implements ContextAssertion {
 			Set<? extends OntProperty> supers = property.listSuperProperties(true).toSet();
 			
 			// if-else statements for each type of ContextAssertion
-			if (supers.contains(ConsertCore.STATIC_RELATION_ASSERTION)
-				|| supers.contains(ConsertCore.STATIC_DATA_ASSERTION)) {
-				return ContextAssertionType.Static;
-			}
-			
-			else if (supers.contains(ConsertCore.SENSED_RELATION_ASSERTION)
+			if (supers.contains(ConsertCore.SENSED_RELATION_ASSERTION)
 				|| supers.contains(ConsertCore.SENSED_DATA_ASSERTION)) {
 				return ContextAssertionType.Sensed;
 			}
@@ -211,6 +206,9 @@ public abstract class ContextAssertionImpl implements ContextAssertion {
 			else if (supers.contains(ConsertCore.DERIVED_RELATION_ASSERTION)
 				|| supers.contains(ConsertCore.DERIVED_DATA_ASSERTION)) {
 				return ContextAssertionType.Derived;
+			}
+			else {	
+				return ContextAssertionType.Dynamic;
 			}
 		}
 		
@@ -226,20 +224,17 @@ public abstract class ContextAssertionImpl implements ContextAssertion {
 						HasValueRestriction hvr = restriction.asHasValueRestriction();
 						if (hvr.onProperty(ConsertCore.CONTEXT_ASSERTION_TYPE_PROPERTY)) {
 							
-							if (hvr.hasValue(ConsertCore.TYPE_STATIC)) {
-								return ContextAssertionType.Static;
-							}
-							
-							else if (hvr.hasValue(ConsertCore.TYPE_SENSED)) {
+							if (hvr.hasValue(ConsertCore.TYPE_SENSED)) {
 								return ContextAssertionType.Sensed;
 							}
-							
 							else if (hvr.hasValue(ConsertCore.TYPE_PROFILED)) {
 								return ContextAssertionType.Profiled;
 							}
-							
 							else if (hvr.hasValue(ConsertCore.TYPE_DERIVED)) {
 								return ContextAssertionType.Derived;
+							}
+							else {
+								return ContextAssertionType.Dynamic;
 							}
 						}
 					}
@@ -247,7 +242,7 @@ public abstract class ContextAssertionImpl implements ContextAssertion {
 			}
 		}
 		
-		return ContextAssertionType.Static;
+		return ContextAssertionType.Dynamic;
 	}
 	
 	
