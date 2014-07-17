@@ -22,11 +22,13 @@ public class ConsertConstraint {
     
     public final static Resource CONTEXT_CONSTRAINT_VIOLATION = m_model.createResource( NS + "ContextConstraintViolation" );
     public final static Resource UNIQUENESS_CONSTRAINT_VIOLATION = m_model.createResource( NS + "UniquenessConstraintViolation" );
+    public final static Resource INTEGRITY_CONSTRAINT_VIOLATION = m_model.createResource( NS + "IntegrityConstraintViolation" );
     public final static Resource VALUE_CONSTRAINT_VIOLATION = m_model.createResource( NS + "ValueConstraintViolation" );
     
-    public final static Resource CONTEXT_CONSTRAINT_TEMPLATE = m_model.createResource( NS + "ContextConstraintTemplate" );
-    public final static Resource UNIQUENESS_CONSTRAINT_TEMPLATE = m_model.createResource( NS + "UniquenessConstraintTemplate" );
-    public final static Resource VALUE_CONSTRAINT_TEMPLATE = m_model.createResource( NS + "ValueConstraintTemplate" );
+    public final static Resource CONTEXT_CONSTRAINT_TEMPLATE = m_model.createResource( NS + "ContextConstraintTemplates" );
+    public final static Resource UNIQUENESS_CONSTRAINT_TEMPLATE = m_model.createResource( NS + "UniquenessConstraintTemplates" );
+    public final static Resource INTEGRITY_CONSTRAINT_TEMPLATE = m_model.createResource( NS + "IntegrityConstraintTemplates" );
+    public final static Resource VALUE_CONSTRAINT_TEMPLATE = m_model.createResource( NS + "ValueConstraintTemplates" );
     
     public final static Resource NARY_INHERITANCE_CONSTRAINT = m_model.createResource( NS + "NaryAssertionInheritanceConstraint" );
     public final static Resource ADD_ASSERTION_ROLE_SUBPROPERTY = m_model.createResource( NS + "AddAssertionRoleSubProperty" );
@@ -37,8 +39,11 @@ public class ConsertConstraint {
     
     public final static Property CONSTRAINT = m_model.createProperty( SPIN.NS  + "contextconstraint" );
     public final static Property HAS_SOURCE_TEMPLATE = m_model.createProperty( NS + "hasSourceTemplate" );
-    public final static Property ON_CONTEXT_ASSERTION = m_model.createProperty( NS + "onContextAssertion" );
+    
     public final static Property HAS_CONFLICTING_ASSERTION = m_model.createProperty( NS + "hasConflictingAssertion" );
+    public final static Property HAS_ASSERTION_TYPE = m_model.createProperty( NS + "hasAssertionType" );
+    public final static Property HAS_ASSERTION_INSTANCE = m_model.createProperty( NS + "hasAssertionInstance" );
+    
     public final static Property HAS_CONFLICT_ASSERTION_VALUE = m_model.createProperty( NS + "hasConflictAssertionValue" );
     public final static Property HAS_CONFLICT_ANNOTATION_VALUE = m_model.createProperty( NS + "hasConflictAnnotationValue" );
 }

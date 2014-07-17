@@ -1,39 +1,49 @@
 package org.aimas.ami.contextrep.model;
 
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.update.UpdateRequest;
 
 public class ContextConstraintViolation {
-	public enum ContextConstraintType { Uniqueness, Value }
+	public enum ContextConstraintType { Uniqueness, Value, Integrity }
 	
 	/*
-	 * The context assertion for which the constraint is expressed
+	 * The list of ContextAssertions (there will be at most two) which compose the violation
 	 */
-	private ContextAssertion constrainedAssertion;
+	protected ViolationAssertionWrapper[] violatingAssertions;
 	
 	/*
 	 * The resource identifying the direct query or template call that expresses the constraint
 	 */
-	private Resource constraintSource;
+	protected Resource constraintSource;
 	
-	private ContextConstraintType constraintType;
+	/*
+	 * The UpdateRequest that triggered the detection of this constraint violation
+	 */
+	protected UpdateRequest triggeringRequest;
 	
-	public ContextConstraintViolation(ContextAssertion constrainedAssertion, Resource constraintSource, ContextConstraintType constraintType) {
+	protected ContextConstraintType constraintType;
+	
+	protected ContextConstraintViolation(ViolationAssertionWrapper[] violatingAssertions, 
+			Resource constraintSource, UpdateRequest triggeringRequest, ContextConstraintType constraintType) {
 	    
-		this.constrainedAssertion = constrainedAssertion;
+		this.violatingAssertions = violatingAssertions;
 	    this.constraintSource = constraintSource;
+	    this.triggeringRequest = triggeringRequest;
 	    this.constraintType = constraintType;
     }
 
 
-	public ContextAssertion getConstrainedAssertion() {
-		return constrainedAssertion;
+	public ViolationAssertionWrapper[] getViolatingAssertions() {
+		return violatingAssertions;
 	}
-
-
+	
 	public Resource getConstraintSource() {
 		return constraintSource;
 	}
 	
+	public UpdateRequest getTriggeringRequest() {
+		return triggeringRequest;
+	}
 	
 	public ContextConstraintType getType() {
 		return constraintType;
@@ -43,8 +53,12 @@ public class ContextConstraintViolation {
 		return constraintType == ContextConstraintType.Uniqueness;
 	}
 	
-	
 	public boolean isValueConstraint() {
 		return constraintType == ContextConstraintType.Value;
 	}
+	
+	public boolean isIntegrityConstraint() {
+		return constraintType == ContextConstraintType.Integrity;
+	}
+	
 }

@@ -1,23 +1,29 @@
 package org.aimas.ami.contextrep.model;
 
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.update.UpdateRequest;
 
 public class ContextValueConstraintViolation extends ContextConstraintViolation {
-	
-	private String assertionUUID;
 	private Resource assertionViolationValue;
 	private Resource annotationViolationValue;
 	
 	public ContextValueConstraintViolation(
-            ContextAssertion constrainedAssertion, Resource constraintSource, 
+            ContextAssertion constrainedAssertion, UpdateRequest triggeringRequest, Resource constraintSource,
             String assertionUUID, Resource assertionViolationValue, Resource annotationViolationValue) {
-	    super(constrainedAssertion, constraintSource, ContextConstraintType.Value);
-	    this.assertionUUID = assertionUUID;
+	    super(new ViolationAssertionWrapper[] {
+	    		new ViolationAssertionWrapper(constrainedAssertion, assertionUUID)
+	    	}, constraintSource, triggeringRequest, ContextConstraintType.Value);
+	    
 	    this.assertionViolationValue = assertionViolationValue;
+	    this.annotationViolationValue = annotationViolationValue;
     }
 
-	public String getAssertionUUID() {
-		return assertionUUID;
+	public ContextAssertion getViolatingAssertion() {
+		return violatingAssertions[0].getAssertion();
+	}
+	
+	public String getViolatingAssertionUUID() {
+		return violatingAssertions[0].getAssertionInstanceUUID();
 	}
 	
 	public boolean hasAssertionViolationValue() {
