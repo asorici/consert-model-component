@@ -7,7 +7,7 @@ import com.hp.hpl.jena.util.LocatorClassLoader;
 
 public class ClassLoaderResourceManager implements ResourceManager {
 	private static Locator resourceLocator;
-	private ClassLoader engineResourceLoader;
+	private ClassLoader resourceLoader;
 	
 	/**
 	 * Create a new ClassLoaderResourceManager by specifying the classloader that is used to 
@@ -16,7 +16,7 @@ public class ClassLoaderResourceManager implements ResourceManager {
 	 * @param engineResourceLoader
 	 */
 	public ClassLoaderResourceManager(ClassLoader engineResourceLoader) {
-		this.engineResourceLoader = engineResourceLoader;
+		this.resourceLoader = engineResourceLoader;
 	}
 	
 	/**
@@ -29,22 +29,27 @@ public class ClassLoaderResourceManager implements ResourceManager {
 	
 	
 	public ClassLoader getLoader() {
-	    return engineResourceLoader;
+	    return resourceLoader;
     }
 	
 	@Override
 	public InputStream getResourceAsStream(String name) {
 		// try the engineResourceLoader first
-		return engineResourceLoader.getResourceAsStream(name);
+		return resourceLoader.getResourceAsStream(name);
 	}
 
 	@Override
     public Locator getResourceLocator() {
 	    if (resourceLocator == null) {
-	    	resourceLocator = new LocatorClassLoader(engineResourceLoader); 
+	    	resourceLocator = new LocatorClassLoader(resourceLoader); 
 	    }
 		
 	    return resourceLocator;
+    }
+
+	@Override
+    public boolean hasResource(String name) {
+	    return resourceLoader.getResource(name) != null;
     }
 	
 }

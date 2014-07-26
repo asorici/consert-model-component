@@ -97,5 +97,18 @@ public class BundleResourceManager implements ResourceManager {
 	        return "LocatorBundle(" + bundle.getSymbolicName() + ")";
         }
 	}
+
+
+	@Override
+    public boolean hasResource(String name) {
+		// try getting with the given name
+		URL entryURL = resourceBundle.getEntry(name);
+		if (entryURL == null) {
+			// try adding a slash at the beginning to search the from the root
+			entryURL = resourceBundle.getEntry("/" + name);
+		}
+		
+		return entryURL != null;
+    }
 	
 }
