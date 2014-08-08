@@ -5,7 +5,6 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.aimas.ami.contextrep.datatype.CalendarIntervalList;
-import org.aimas.ami.contextrep.model.ContextAssertion;
 import org.aimas.ami.contextrep.model.ContextAssertion.ContextAssertionType;
 import org.aimas.ami.contextrep.vocabulary.ConsertAnnotation;
 import org.aimas.ami.contextrep.vocabulary.ConsertCore;
@@ -60,14 +59,16 @@ public class ContextModelUtils {
 	}
 	
 	
-	public static List<Statement> createAnnotationStatements(String graphURI, 
+	public static List<Statement> createAnnotationStatements(String graphURI, String assertionResourceURI,
 			ContextAssertionType assertionType, Calendar timestamp, CalendarIntervalList validity, 
 			double accuracy, String sourceURI) {
-		List<Statement> annotationStatements = new ArrayList<>();
+		List<Statement> annotationStatements = new ArrayList<Statement>();
 		
 		Resource idGraph = ResourceFactory.createResource(graphURI);
 		
 		Property assertionTypeProp = ConsertCore.CONTEXT_ASSERTION_TYPE_PROPERTY;
+		Property assertionResProp = ConsertCore.CONTEXT_ASSERTION_RESOURCE;
+		
 		Property hasSourceProp = ConsertAnnotation.HAS_SOURCE;
 		Property hasTimestampProp = ConsertAnnotation.HAS_TIMESTAMP;
 		Property hasValidityProp = ConsertAnnotation.HAS_VALIDITY;
@@ -77,6 +78,11 @@ public class ContextModelUtils {
 		Resource typeIndividual = ResourceFactory.createResource(assertionType.getTypeURI());
 		Statement typeStatement = ResourceFactory.createStatement(idGraph, assertionTypeProp, typeIndividual);
 		annotationStatements.add(typeStatement);
+		
+		// Create assertionResource statement
+		Resource assertionRes = ResourceFactory.createResource(assertionResourceURI);
+		Statement assertionResStmt = ResourceFactory.createStatement(idGraph, assertionResProp, assertionRes);
+		annotationStatements.add(assertionResStmt);
 		
 		// Create validity statement
 		Literal validityAnnVal = ResourceFactory.createTypedLiteral(validity);
