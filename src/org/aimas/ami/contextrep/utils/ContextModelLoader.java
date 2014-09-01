@@ -284,28 +284,37 @@ public class ContextModelLoader {
         String contextModelCoreURI = contextModelURIMap.get(DOMAIN_ONT_CORE_URI_KEY);
         OntModel contextModelCore = ModelFactory.createOntologyModel(domainContextModelSpec);
         
-        contextModelCore.add(domainDocManager.getFileManager().loadModel(ConsertCore.BASE_URI));
-        contextModelCore.addSubModel(domainDocManager.getFileManager().loadModel(contextModelCoreURI));
+        contextModelCore.add(domainDocManager.getFileManager().loadModel(contextModelCoreURI));
+        contextModelCore.addSubModel(domainDocManager.getFileManager().loadModel(ConsertCore.BASE_URI));
+        domainDocManager.loadImports(contextModelCore);
         contextModelMap.put(DOMAIN_ONT_CORE_URI_KEY, contextModelCore);
         
         // 2) build the annotation context model
         String contextModelAnnotationURI = contextModelURIMap.get(DOMAIN_ONT_ANNOTATION_URI_KEY);
         OntModel contextModelAnnotations = ModelFactory.createOntologyModel(domainContextModelSpec);
         
-        contextModelAnnotations.add(domainDocManager.getFileManager().loadModel(ConsertAnnotation.BASE_URI));
         if (contextModelAnnotationURI != null) {
-        	contextModelAnnotations.addSubModel(domainDocManager.getFileManager().loadModel(contextModelAnnotationURI));
+        	contextModelAnnotations.add(domainDocManager.getFileManager().loadModel(contextModelAnnotationURI));
+        	contextModelAnnotations.addSubModel(domainDocManager.getFileManager().loadModel(ConsertAnnotation.BASE_URI));
         }
+        else {
+        	contextModelAnnotations.add(domainDocManager.getFileManager().loadModel(ConsertAnnotation.BASE_URI));
+        }
+        domainDocManager.loadImports(contextModelAnnotations);
         contextModelMap.put(DOMAIN_ONT_ANNOTATION_URI_KEY, contextModelAnnotations);
         
         // 3) build the constraints context model
         String contextModelConstraintsURI = contextModelURIMap.get(DOMAIN_ONT_CONSTRAINT_URI_KEY);
         OntModel contextModelConstraints = ModelFactory.createOntologyModel(domainContextModelSpec);
         
-        contextModelConstraints.add(domainDocManager.getFileManager().loadModel(ConsertConstraint.BASE_URI));
         if (contextModelConstraintsURI != null) {
-        	contextModelConstraints.addSubModel(domainDocManager.getFileManager().loadModel(contextModelConstraintsURI));
+        	contextModelConstraints.add(domainDocManager.getFileManager().loadModel(contextModelConstraintsURI));
+        	contextModelConstraints.addSubModel(domainDocManager.getFileManager().loadModel(ConsertConstraint.BASE_URI));
         }
+        else {
+        	contextModelConstraints.add(domainDocManager.getFileManager().loadModel(ConsertConstraint.BASE_URI));
+        }
+        domainDocManager.loadImports(contextModelConstraints);
         contextModelMap.put(DOMAIN_ONT_CONSTRAINT_URI_KEY, contextModelConstraints);
         
         
@@ -313,20 +322,28 @@ public class ContextModelLoader {
         String contextModelFunctionsURI = contextModelURIMap.get(DOMAIN_ONT_FUNCTIONS_URI_KEY);
         OntModel contextModelFunctions = ModelFactory.createOntologyModel(domainContextModelSpec);
         
-        contextModelFunctions.add(domainDocManager.getFileManager().loadModel(ConsertFunctions.BASE_URI));
         if (contextModelFunctionsURI != null) {
-        	contextModelFunctions.addSubModel(domainDocManager.getFileManager().loadModel(contextModelFunctionsURI));
+        	contextModelFunctions.add(domainDocManager.getFileManager().loadModel(contextModelFunctionsURI));
+        	contextModelFunctions.addSubModel(domainDocManager.getFileManager().loadModel(ConsertFunctions.BASE_URI));
         }
+        else {
+        	contextModelFunctions.add(domainDocManager.getFileManager().loadModel(ConsertFunctions.BASE_URI));
+        }
+        domainDocManager.loadImports(contextModelFunctions);
         contextModelMap.put(DOMAIN_ONT_FUNCTIONS_URI_KEY, contextModelFunctions);
         
         // 5) build the rules context model
         String contextModelRulesURI = contextModelURIMap.get(DOMAIN_ONT_RULES_URI_KEY);
         OntModel contextModelRules = ModelFactory.createOntologyModel(domainContextModelSpec);
         
-        contextModelRules.add(domainDocManager.getFileManager().loadModel(ConsertRules.BASE_URI));
         if (contextModelRulesURI != null) {
-        	contextModelRules.addSubModel(domainDocManager.getFileManager().loadModel(contextModelRulesURI));
+        	contextModelRules.add(domainDocManager.getFileManager().loadModel(contextModelRulesURI));
+        	contextModelRules.addSubModel(domainDocManager.getFileManager().loadModel(ConsertRules.BASE_URI));
         }
+        else {
+        	contextModelRules.add(domainDocManager.getFileManager().loadModel(ConsertRules.BASE_URI));
+        }
+        domainDocManager.loadImports(contextModelRules);
         contextModelMap.put(DOMAIN_ONT_RULES_URI_KEY, contextModelRules);
         
 	    return contextModelMap;
@@ -351,7 +368,7 @@ public class ContextModelLoader {
 	}
 	
 	public OntModel getOWLInferenceModel(OntModel basicContextModel) {
-		OntModel owlModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_MINI_RULE_INF);
+		OntModel owlModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_MICRO_RULE_INF);
 		owlModel.addSubModel(basicContextModel);
 		
 		return owlModel;
