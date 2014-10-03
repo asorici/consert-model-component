@@ -25,7 +25,7 @@ public class CalendarInterval extends Interval<Calendar> {
 	
 	public String unparse() {
 		SimpleDateFormat formatter = new SimpleDateFormat(FORMAT_TEMPLATE);
-		formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+		formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
 		
 		Calendar lowerLimit = lowerLimit();
 		Calendar upperLimit = upperLimit();
@@ -56,7 +56,7 @@ public class CalendarInterval extends Interval<Calendar> {
 			throw new IntervalFormatException(intervalStr);
 		
 		SimpleDateFormat formatter = new SimpleDateFormat(FORMAT_TEMPLATE);
-		formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+		formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
 		
 		Calendar lower = Calendar.getInstance();
 		Calendar upper = Calendar.getInstance();
@@ -114,7 +114,7 @@ public class CalendarInterval extends Interval<Calendar> {
 	@Override
 	public String toString() {
 		SimpleDateFormat formatter = new SimpleDateFormat(FORMAT_TEMPLATE);
-		formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+		formatter.setTimeZone(TimeZone.getTimeZone("GMT"));
 
 		if (isEmpty())
 			return "{}";
