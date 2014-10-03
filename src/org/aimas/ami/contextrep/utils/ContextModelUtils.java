@@ -1,8 +1,11 @@
 package org.aimas.ami.contextrep.utils;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.aimas.ami.contextrep.datatype.CalendarIntervalList;
 import org.aimas.ami.contextrep.model.ContextAssertion.ContextAssertionType;
@@ -21,6 +24,8 @@ import com.hp.hpl.jena.shared.uuid.UUID_V4_Gen;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 public class ContextModelUtils {
+	private static final String XSD_DATETIME_PATTERN_NO_TZ = "yyyy-MM-dd'T'HH:mm:ss.SSS";
+	
 	static {
 		JenaUUID.setFactory(new UUID_V4_Gen());
 	}
@@ -104,7 +109,14 @@ public class ContextModelUtils {
 		annotationStatements.add(timestampStatement);
 		annotationStatements.add(timestampTypeStatement);
 		annotationStatements.add(timestampValStatement);
-				
+		
+		/*
+		System.out.println("["+ ContextModelUtils.class.getSimpleName() + "] creating annotation timestamp for assertion <"+ assertionResourceURI +">: " 
+				+ xsdTimestamp);
+		System.out.println("["+ ContextModelUtils.class.getSimpleName() + "] creating annotation validity for assertion <"+ assertionResourceURI +">: " 
+				+ validityAnnVal);
+		*/
+		
 		// Create certainty Literal
 		Literal certaintyAnnVal = ResourceFactory.createTypedLiteral(new Double(accuracy));
 		Resource certaintyAnn = ResourceFactory.createResource();
@@ -127,4 +139,54 @@ public class ContextModelUtils {
 		
 		return annotationStatements;
 	}
+	
+	public static String calendarToXSDString(Calendar cal) {
+		/* We are attempting here to fix an issue with the calendarToXSDString method in com.hp.hpl.jena.sparql.util.Utils.
+		 * The apparent bug there is that the datetime formatter is left with the default time zone.
+		 * Since the method parses the timezone separately, the conversion of the datetime is done beforehand, with a representation in the DEFAULT timezone,
+		 * while the ACTUAL timezone is taken from the original calendar parameter. Thus the resulting timezone representation is skewed by the offset between 
+		 * the DEFAULT timezone and the timezone of the calendar given as parameter.
+		 * 
+		 * Here we provide a fix, by considering the timezone for the formatter, as the one coming from the calendar parameter.
+		 */
+        SimpleDateFormat dFmt = new SimpleDateFormat(XSD_DATETIME_PATTERN_NO_TZ);
+        dFmt.setTimeZone(cal.getTimeZone());
+        
+        Date date = cal.getTime() ;
+        String lex = dFmt.format(date) ;
+        lex = lex+calcTimezone(cal) ;
+        return lex ;
+    }
+    
+    private static String calcTimezone(Calendar cal) {
+        Date date = cal.getTime() ;
+        TimeZone z = cal.getTimeZone() ;
+        int tzOff = z.getRawOffset() ;
+        int tz = tzOff ;
+
+        if ( z.inDaylightTime(date) )
+        {
+            int tzDst = z.getDSTSavings() ;
+            tz = tz + tzDst ;
+        }
+        
+        String sign = "+" ;
+        if ( tz < 0 )
+        {
+            sign = "-" ;
+            tz = -tz ;
+        }
+
+        int tzH = tz/(60*60*1000) ;             // Integer divide towards zero.
+        int tzM = (tz-tzH*60*60*1000)/(60*1000) ;
+        
+        String tzH_str = Integer.toString(tzH) ;
+        String tzM_str = Integer.toString(tzM) ;
+        
+        if ( tzH < 10 )
+            tzH_str = "0"+ tzH_str ;
+        if ( tzM < 10 )
+            tzM_str = "0"+ tzM_str ;
+        return sign+tzH_str+":"+tzM_str ;
+    }
 }
