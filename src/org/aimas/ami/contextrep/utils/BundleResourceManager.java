@@ -14,7 +14,7 @@ import com.hp.hpl.jena.util.TypedStream;
 
 public class BundleResourceManager implements ResourceManager {
 	
-	private static Locator resourceLocator;
+	private Locator resourceLocator;
 	private Bundle resourceBundle;
 	
 	public BundleResourceManager(Bundle resourceBundle) {

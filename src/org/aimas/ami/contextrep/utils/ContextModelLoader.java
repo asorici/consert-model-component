@@ -3,6 +3,7 @@ package org.aimas.ami.contextrep.utils;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -28,6 +29,8 @@ import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.shared.NotFoundException;
 import com.hp.hpl.jena.util.Locator;
 import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDF;
@@ -58,27 +61,61 @@ public class ContextModelLoader {
 	};
 	
 	
-	public ContextModelLoader(ResourceManager resourceManager) throws ContextModelConfigException {
+	public ContextModelLoader(ResourceManager resourceManager, Dictionary<String, String> modelDefinitionFiles) 
+			throws ContextModelConfigException {
+		
 		this.modelResourceManager = resourceManager;
-		configure();
+		configure(modelDefinitionFiles);
 	}
 	
 	
 	// Context Model configuration
 	///////////////////////////////////////////////////////////////////////////////////////
-	
 	private ResourceManager modelResourceManager;
 	private Properties modelConfigProperties;
 	
-	private void configure() throws ContextModelConfigException {
+	private void configure(Dictionary<String, String> modelDefinitionFiles) throws ContextModelConfigException {
 		
-		// load model.properties file
-		InputStream modelConfigStream = modelResourceManager.getResourceAsStream(MODEL_PROPERTIES_FILE);
-		if (modelConfigStream == null) {
-			throw new ContextModelConfigException("Context Model configuration file: " + MODEL_PROPERTIES_FILE + " not found in resources.");
+		if (modelDefinitionFiles != null) {
+			// If we have a modelDefinition dictionary, use it to retrieve the module files
+			String domainDocMgrFile = modelDefinitionFiles.get(ContextModelLoader.DOMAIN_ONT_DOCMGR_KEY);
+			String domainCoreFile = modelDefinitionFiles.get(ContextModelLoader.DOMAIN_ONT_CORE_URI_KEY);
+			String domainAnnotationsFile = modelDefinitionFiles.get(ContextModelLoader.DOMAIN_ONT_ANNOTATION_URI_KEY);
+			String domainConstraintsFile = modelDefinitionFiles.get(ContextModelLoader.DOMAIN_ONT_CONSTRAINT_URI_KEY);
+			String domainFunctionsFile = modelDefinitionFiles.get(ContextModelLoader.DOMAIN_ONT_FUNCTIONS_URI_KEY);
+			String domainRulesFile = modelDefinitionFiles.get(ContextModelLoader.DOMAIN_ONT_RULES_URI_KEY);
+			
+			modelConfigProperties = new Properties();
+			
+			if (domainDocMgrFile != null)
+				modelConfigProperties.setProperty(DOMAIN_ONT_DOCMGR_KEY, domainDocMgrFile);
+			
+			if (domainCoreFile != null)
+				modelConfigProperties.setProperty(DOMAIN_ONT_CORE_URI_KEY, domainCoreFile);
+			
+			if (domainAnnotationsFile != null)
+				modelConfigProperties.setProperty(DOMAIN_ONT_ANNOTATION_URI_KEY, domainAnnotationsFile);
+			
+			if (domainConstraintsFile != null)
+				modelConfigProperties.setProperty(DOMAIN_ONT_CONSTRAINT_URI_KEY, domainConstraintsFile);
+			
+			if (domainFunctionsFile != null)
+				modelConfigProperties.setProperty(DOMAIN_ONT_FUNCTIONS_URI_KEY, domainFunctionsFile);
+			
+			if (domainRulesFile != null)
+				modelConfigProperties.setProperty(DOMAIN_ONT_RULES_URI_KEY, domainRulesFile);
+		}
+		else {
+			// Otherwise, resort to searching for them in the model.properties file
+			InputStream modelConfigStream = modelResourceManager.getResourceAsStream(MODEL_PROPERTIES_FILE);
+			if (modelConfigStream == null) {
+				throw new ContextModelConfigException("Context Model configuration file: " + MODEL_PROPERTIES_FILE + " not found in resources.");
+			}
+			
+			modelConfigProperties = readModelConfig(modelConfigStream);
 		}
 		
-		modelConfigProperties = readModelConfig(modelConfigStream);
+		validateModelConfig(modelConfigProperties);
 	}
 	
 	private Properties readModelConfig(InputStream configStream) throws ContextModelConfigException {
@@ -87,7 +124,6 @@ public class ContextModelLoader {
 			Properties modelConfiguration = new Properties();
 			modelConfiguration.load(configStream);
 			
-			validateModelConfig(modelConfiguration);
 			return modelConfiguration;
 		}
         catch (IOException e) {
@@ -127,11 +163,35 @@ public class ContextModelLoader {
 		baseContextModelMap = setupContextModelModules(modelConfigProperties, contextModelURIMap);
 	}
 	
-	
 	public void closeModel() {
 		for (String moduleKey : baseContextModelMap.keySet()) {
 			OntModel m = baseContextModelMap.get(moduleKey);
 			m.close();
+		}
+	}
+	
+	public OntModel load(String filenameOrURI) throws ContextModelConfigException {
+		try {
+			// setup the ontology model doc managers
+			setupOntologyDocManagers(modelConfigProperties);
+			
+			// create the OntModelSpec
+			OntModelSpec modelSpec = new OntModelSpec(OntModelSpec.OWL_MEM);
+			modelSpec.setDocumentManager(modelGlobalDocManager);
+			
+			// create the agent configuration OntModel
+			OntModel model = ModelFactory.createOntologyModel(modelSpec);
+			model.add(modelGlobalDocManager.getFileManager().loadModel(filenameOrURI));
+			modelGlobalDocManager.loadImports(model);
+			
+			return model;
+		} 
+		catch(NotFoundException e) {
+			throw new ContextModelConfigException("The filename or URI " + filenameOrURI + 
+					" could not be found within the resources managed by this loader.", e);
+		}
+		catch(JenaException e) {
+			throw new ContextModelConfigException("Syntax error for model loaded from filename or URI " + filenameOrURI, e);
 		}
 	}
 	
